@@ -15,9 +15,21 @@ const settings = {
 }
 db.settings(settings);
 
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        
+    } else {
+        
+    }
+});
+
 function login(){
-    var username = $('#username').val();
-    var password = $('#password').val();
-    
+    var username = $("#username").val();
+    var password = $("#password").val();
+   
+    if(username == "" || password == "") return;
+    db.collection("usernames").doc(username).get().then(function(doc) {
+       console.log(doc);
+    });
     
 }

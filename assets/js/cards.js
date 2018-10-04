@@ -8,6 +8,8 @@ var config = {
   };
 
 var ohc;
+var selectedFile;
+var imageURL;
 firebase.initializeApp(config);
 
 console.log(firebase.firestore());
@@ -38,26 +40,29 @@ firebase.auth().onAuthStateChanged(function(user){
         loadCards();
 
         $('#cardimage').on('change', function(event){
-            selectedFile = event.target.files[0];
+             selectedFile = event.target.files[0];
         });
 
         $('#enrollBtn').click(function(){
-            /*var filename = selectedFile.name;
-            var storageRef = firebase.storage.ref('/cards' + filename);
+            var filename = selectedFile.name;
+            var storageRef = firebase.storage().ref(filename);
             var uploadTask = storageRef.put(selectedFile);
 
             uploadTask.on('state_changed', function(snapshot){
-
+                M.toast({html: "Enrolling Card Please wait..."});
             }, function(error){
-
+                // console.log(error.mesage);
             }, function(){
-                var imageURL = uploadTask.snapshot.downloadURL;
-            });*/
+                // imageURL = uploadTask.snapshot.ref.getDownloadURL();
+                uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                    // console.log('File available at', downloadURL);
+                    imageURL = downloadURL;
+            //add to collection
             var id = "";
             var cardname = $('#cardname').val();
             var cardprice = $('#cardprice').val();
             db.collection("card_templates").doc(cardname).set({
-                // 'imageURL': imageURL,
+                'imageURL': imageURL,
                 'name':cardname,
                 'price':cardprice
             }).then(function(){
@@ -67,6 +72,23 @@ firebase.auth().onAuthStateChanged(function(user){
                 console.log(error.code);
                 console.log(error.message);
             });
+
+                  });
+            });
+            /*var id = "";
+            var cardname = $('#cardname').val();
+            var cardprice = $('#cardprice').val();
+            db.collection("card_templates").doc(cardname).set({
+                'imageURL': imageURL,
+                'name':cardname,
+                'price':cardprice
+            }).then(function(){
+                M.toast({html: "Card enrollment Successfull"});
+                loadCards();
+            }).catch(function(error){
+                console.log(error.code);
+                console.log(error.message);
+            });*/
 
             });
         //for modal
@@ -78,11 +100,11 @@ firebase.auth().onAuthStateChanged(function(user){
 
 function loadCards(){
     $("#bodyTable").empty();
-    db.collection("card_templates").get().then(function(querySnapShot){
+    db.collection("card_templates").orderBy('name','asc').get().then(function(querySnapShot){
         querySnapShot.forEach(function(doc){
             var cards = doc.data();
             var tr = $("<tr></tr>");
-            tr.append("<td width='4%'><img src='"+cards.imageURL+"'></td>");
+            tr.append("<td width='4%'><img src='"+cards.imageURL+"' height='100px'></td>");
             tr.append("<td>"+cards.name+"</td>");
             tr.append("<td>Php "+formatNumber(cards.price)+"</td>");
             var td = $("<td></td>")
@@ -118,6 +140,7 @@ function loadCards(){
                 db.collection("card_templates").doc(cards.name).delete().then(function(){
                     tr.remove();
                 })
+             
             });
 
             td.append(editBtn);

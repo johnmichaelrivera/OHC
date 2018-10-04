@@ -1,0 +1,154 @@
+<html>
+    <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>One Health Card</title>
+            <!-- CSS -->
+            <link rel="stylesheet" href="assets/css/materialize.css">
+            <link rel="stylesheet" href="assets/css/cards.css">
+            <link rel="stylesheet" href="assets/css/default.css">
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-storage.js"></script>
+            <!-- JavaScript -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="assets/js/materialize.js"></script>
+            <script src="assets/js/cards.js"></script>
+    </head>
+    <body>
+            <header>
+                    <nav class='blue'>
+                            <div class="nav-wrapper blue">
+                              <a href="#" class="brand-logo">
+                                <img src='assets/img/logo.png'>
+                              </a>
+                              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                                <li>
+                                    <a href="#" id="ohc_name"></a>
+                                </li>
+
+                                <li>
+                                    <a href="#" class="white-text">
+                                        <i class="material-icons">credit_card</i>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="transactions.html" class="white-text">
+                                        <i class="material-icons">receipt</i>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="customer.html" class="white-text">
+                                        <i class="material-icons">person</i>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class='btn center blue white-text' onclick=logout();>Logout</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </nav>
+                  </header>
+
+            <main>
+
+                    <div class="row" style="margin:10px;">
+                            <div class="col s12 valign-wrapper">
+                            
+                                <div class="col s12 valign-wrapper">
+                                    <div class = "col md 6 center-align">
+                                       <h3>Cards</h3>
+                                    </div>
+                                    
+                                    
+                                </div>
+                               
+                                <div class = "col s2 m1 center-align">
+                                    <a class="btn-floating blue modal-trigger" href="#newCard" id="addBtn"><i class="material-icons">add</i></a>
+                                </div>
+                            </div>
+                        </div>
+                
+
+                    <div class="row">
+                            <div class="col s12">
+                                <table class="responsive-table">
+                                    <thead>
+                                    </thead>
+                                    <tbody id="bodyTable">
+                
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                
+            </main>
+          
+           <footer class="page-footer blue">
+                    <div class="container">
+                        
+                    </div>
+                    <div class="footer-copyright">
+                        <div class="container">
+                        </div>
+                    </div>
+                </footer>
+        
+                <div id="newCard" class="modal">
+                        <div class="modal-content">
+                            <h4>Enroll New Card</h4>
+                            <div class="row">
+                                <div class="input-field col s12 m6">
+                                    <input id="cardname" type="text" class="validate">
+                                    <label for="cardname">Name</label>
+                                </div>
+                                <div class="input-field col s12 m6">
+                                    <input id="cardprice" type="text" class="validate">
+                                    <label for="cardprice">Price</label>
+                                </div>
+                                <div class="input-field col s12 m6">
+                                        <label for="cardimage">Image</label><br><br>
+                                    <input id="cardimage" type="file" class="validate">
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="modal-close waves-effect waves-green btn-flat" id="enrollBtn">Enroll</a>
+                        </div>
+                    </div>
+
+                    <div id="editCard" class="modal">
+                            <div class="modal-content">
+                                <h4>Enroll New Card</h4>
+                                <div class="row">
+                                    <div class="input-field col s12 m6">
+                                        <input id="editcardname" type="text" class="validate">
+                                        <label for="editcardname">Name</label>
+                                    </div>
+                                    <div class="input-field col s12 m6">
+                                        <input id="editcardprice" type="text" class="validate">
+                                        <label for="editcardprice">Price</label>
+                                    </div>
+                                    <div class="input-field col s12 m6">
+                                            <label for="editcardimage">Image</label><br><br>
+                                        <input id="editcardimage" type="file" class="validate">
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="modal-close waves-effect waves-green btn-flat" id="editBtn">save</a>
+                            </div>
+                        </div>
+
+                    
+    </body>
+</html>

@@ -9,6 +9,8 @@ var config = {
 
 var ohc;
 firebase.initializeApp(config);
+
+console.log(firebase.firestore());
 const db = firebase.firestore();
 const settings = {
     "timestampsInSnapshots": true
@@ -35,11 +37,27 @@ firebase.auth().onAuthStateChanged(function(user){
         //display cardlist
         loadCards();
 
+        $('#cardimage').on('change', function(event){
+            selectedFile = event.target.files[0];
+        });
+
         $('#enrollBtn').click(function(){
+            /*var filename = selectedFile.name;
+            var storageRef = firebase.storage.ref('/cards' + filename);
+            var uploadTask = storageRef.put(selectedFile);
+
+            uploadTask.on('state_changed', function(snapshot){
+
+            }, function(error){
+
+            }, function(){
+                var imageURL = uploadTask.snapshot.downloadURL;
+            });*/
             var id = "";
             var cardname = $('#cardname').val();
             var cardprice = $('#cardprice').val();
             db.collection("card_templates").doc(cardname).set({
+                // 'imageURL': imageURL,
                 'name':cardname,
                 'price':cardprice
             }).then(function(){

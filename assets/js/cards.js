@@ -29,7 +29,7 @@ firebase.auth().onAuthStateChanged(function(user){
         var providerData = user.providerData;
         db.collection('dashboard_users').doc(uid).get().then(function(doc){
              ohc = doc.data();
-             $("#ohc_name").text(ohc.email);
+             $("#ohc_name").text(ohc.username);
         }).catch(function(error){
             console.log(error.code);
             console.log(error.message);

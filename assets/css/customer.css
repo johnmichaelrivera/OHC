@@ -1,0 +1,21 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+main {
+    flex: 1 0 auto; 
+}
+
+.flex{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.info{
+    display: none;
+}
+
+.pac-container {
+    z-index: 10000 !important;
+}

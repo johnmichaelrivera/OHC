@@ -10,6 +10,8 @@ var config = {
 var ohc;
 var selectedFile;
 var imageURL;
+var imgurl;
+var imgname;
 firebase.initializeApp(config);
 
 console.log(firebase.firestore());
@@ -103,6 +105,10 @@ function loadCards(){
     db.collection("card_templates").orderBy('name','asc').get().then(function(querySnapShot){
         querySnapShot.forEach(function(doc){
             var cards = doc.data();
+             imgurl = cards.imageURL.split('/').pop()
+             imgname = imgurl.split('?');
+             imgname = imgname[0];
+
             var tr = $("<tr></tr>");
             tr.append("<td width='4%'><img src='"+cards.imageURL+"' height='100px'></td>");
             tr.append("<td>"+cards.name+"</td>");
@@ -137,8 +143,16 @@ function loadCards(){
             });
 
             deleteBtn.click(function(){
+                
                 db.collection("card_templates").doc(cards.name).delete().then(function(){
                     tr.remove();
+                })
+
+                firebase.storage().ref(imgname).delete().then(function(){
+                    console.log(''+imgname+' deleted ');
+                }).catch(function(error){
+                    console.log(error.code);
+                    console.log(error.message);
                 })
              
             });

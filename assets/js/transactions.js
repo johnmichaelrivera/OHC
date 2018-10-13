@@ -44,22 +44,26 @@ firebase.auth().onAuthStateChanged(function(user){
 
 function loadTransactions(){
     $('#bodyTable').empty();
-    db.collection('transactions').get().then(function(querySnapshot){
+    db.collection('transactions').orderBy('clinicID','asc').get().then(function(querySnapshot){
         querySnapshot.forEach(function(doc){
             var transactions = doc.data();
             db.collection('users').doc(transactions.userID).get().then(function(doc2){
                 var user = doc2.data();
            db.collection('services').doc(transactions.services[0]).get().then(function(doc3){
                 var cardservices = doc3.data();
-
+            db.collection('cards').doc(transactions.cardID).get().then(function(doc4){
+                var cards = doc4.data();
+                
                 var tr = $("<tr></tr>");
                 tr.append("<td>"+transactions.clinicID+"</td>");
                 tr.append("<td>"+transactions.representative+"</td>");
                 tr.append("<td>"+user.fullName+"</td>");
+                tr.append("<td>"+cards.type+"</td>");
                 tr.append("<td>"+transactions.cardID+"</td>");
                 tr.append("<td>"+cardservices.name+"</td>");
                 $("#bodyTable").append(tr); 
                 loadHead();
+            })//end cards
 
            });//end services
             });//end users
@@ -78,7 +82,7 @@ function loadHead(){
     var txt = ""
     
         txt = "<tr><th>Clinic</th><th>Representative</th>\
-            <th>Client</th><th>Card ID</th>\
+            <th>Client</th><th>Card</th><th>Card ID</th>\
             <th>Service</th></tr>";
         $("thead").html(txt);
 }

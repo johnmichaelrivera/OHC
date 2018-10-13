@@ -8,8 +8,14 @@ var config = {
   };
 
 var ohc;
+var selectedFile;
+var imageURL;
+var imgurl;
+var imgname;
+
 firebase.initializeApp(config);
 
+console.log(firebase.firestore());
 const db = firebase.firestore();
 const settings = {
     "timestampsInSnapshots": true
@@ -34,47 +40,46 @@ firebase.auth().onAuthStateChanged(function(user){
             console.log(error.message);
         })
 
-        loadHead();
-        loadCustomers();
+        loadServices();
+
+        //for modal
+        $('.modal').modal();
     }else{
 
     }
 });
 
 
-function loadCustomers(){
-    $('#bodyTable').empty();
-    db.collection('users').orderBy('fullName').get().then(function(querySnapshot){
+function loadServices(){
+    $("bodyTable").empty();
+    db.collection("service_templates").orderBy('services').get().then(function(querySnapshot){
         querySnapshot.forEach(function(doc){
-            var customers = doc.data();
-            var date = new Date(customers.birthday.seconds*1000);
-            var year = date.getFullYear();
-            // var month = date.getMonth()+1 //getMonth is zero based;
-            var locale = "en-us";
-            var month = date.toLocaleString(locale, {month: "long"});
-            var day = date.getDate();
-            var format_date = ""+month+" "+day+", "+year+""; 
-            var tr = $("<tr></tr>");
-            tr.append("<td>"+customers.fullName+"</td>");
-            tr.append("<td>"+format_date+"</td>");
-            // tr.append("<td>"+new Date(customers.birthday.seconds*1000).toLocaleString()+"</td>")
-            tr.append("<td>"+customers.gender+"</td>");
-            tr.append("<td>"+customers.address+"</td>");
-            tr.append("<td>"+customers.email+"</td>");
-            tr.append("<td>"+customers.phone+"</td>");
+           var servicelist = doc.data();
+           db.collection("category_templates").doc(servicelist.category_id).get().then(function(doc2){
+               var categorylist = doc2.data();
 
-            $('#bodyTable').append(tr);
+               var tr = $("<tr></tr>");
+            //    tr.append("<td>"+categorylist.category+"</td>");
+               tr.append("<td>"+servicelist.services+"</td>");
+               tr.append("<td>"+servicelist.description+"</td>");
+              
+               $("#bodyTable").append(tr);
+               loadHead();
+           })
         })
-    });
+    })
 }
+
 function loadHead(){
     var txt = ""
     
-        txt = "<tr><th>Name</th><th>Birthday</th>\
-            <th>Gender</th><th>Address</th>\
-            <th>Email</th><th>Contact</th></tr>";
+        txt = "<tr><th>Category</th><th>Services</th><th>Description</th></tr>";
         $("thead").html(txt);
 }
+
+function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+  }
 
 function logout(){
     firebase.auth().signOut().then(function() {

@@ -12,6 +12,7 @@ var selectedFile;
 var imageURL;
 var imgurl;
 var imgname;
+
 firebase.initializeApp(config);
 
 console.log(firebase.firestore());
@@ -44,6 +45,10 @@ firebase.auth().onAuthStateChanged(function(user){
         $('#cardimage').on('change', function(event){
              selectedFile = event.target.files[0];
         });
+
+        $('#editcardimage').on('change', function(event){
+            selectedFile = event.target.files[0];
+       });
 
         $('#enrollBtn').click(function(){
             var filename = selectedFile.name;
@@ -126,10 +131,16 @@ function loadCards(){
                     cards.name = $('#editcardname').val();
                     cards.price = $('#editcardprice').val();
 
-                    db.collection('card_templates').doc(cards.name).set(cards)
+                    var editfilename = selectedFile.name;
+                    // var editstorageRef = firebase.storage().ref(editfilename);
+                    // var edituploadTask = storageRef.put(selectedFile);
+
+                    console.log(editfilename);
+
+                    /*db.collection('card_templates').doc(cards.name).set(cards)
                     .then(function(){
                         loadCards();
-                    });
+                    });*/
                     $(this).unbind(e);
                 }
 
@@ -143,13 +154,12 @@ function loadCards(){
             });
 
             deleteBtn.click(function(){
-                
-                db.collection("card_templates").doc(cards.name).delete().then(function(){
-                    tr.remove();
-                })
 
                 firebase.storage().ref(imgname).delete().then(function(){
                     console.log(''+imgname+' deleted ');
+                    db.collection("card_templates").doc(cards.name).delete().then(function(){
+                        tr.remove();
+                    })
                 }).catch(function(error){
                     console.log(error.code);
                     console.log(error.message);

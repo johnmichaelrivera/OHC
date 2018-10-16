@@ -12,7 +12,8 @@ var selectedFile;
 var imageURL;
 var imgurl;
 var imgname;
-
+var serviceRef;
+var serviceRef2;
 firebase.initializeApp(config);
 
 console.log(firebase.firestore());
@@ -39,8 +40,8 @@ firebase.auth().onAuthStateChanged(function(user){
             console.log(error.code);
             console.log(error.message);
         })
-        // loadSelectClient();
-        loadserviceAvailed();
+        loadClientList();
+        // loadserviceAvailed();
         //for modal
         $('.modal').modal();
     }else{
@@ -48,9 +49,31 @@ firebase.auth().onAuthStateChanged(function(user){
     }
 });
 
-function loadserviceAvailed(){
+function loadClientList(){
+    db.collection("users").get().then(function(querySnapshot){
+        querySnapshot.forEach(function(doc){
+            var text = $("#selectClient").html();
+            text = text+"<option value='"+doc.data().uid+"'>"+doc.data().fullName+"</option>\n";
+            $("#selectClient").html(text);
+        })
+        $("select").formSelect();
+    });
+    $("#selectClient").on('change', function(e){
+        // console.log($("#selectClient").val());
+        loadserviceAvailed($("#selectClient").val())
+    });
+    loadserviceAvailed("Any");
+}
+function loadserviceAvailed(client){
     $("#bodyTable").empty();
-    db.collection("services").get().then(function(querySnapshot){
+    serviceRef = db.collection("services");
+    if(client!= "Any"){
+        serviceRef2 = serviceRef.where("userID","==",client);
+    }else{
+        serviceRef2 = serviceRef;
+    }
+    // db.collection("services").get().then(function(querySnapshot){
+       serviceRef2.get().then(function(querySnapshot){
             querySnapshot.forEach(function(doc){
                 var serviceAvailed = doc.data();
                 db.collection("users").doc(serviceAvailed.userID).get().then(function(doc2){
@@ -67,32 +90,19 @@ function loadserviceAvailed(){
                         }else if(serviceAvailed.used==true){
                             tr.append("<td style='color:red'><b>Used</b></td>");
                         }
-
                         $("#bodyTable").append(tr);
                         loadHead();
                     })//end cards
                 })//end users
             })//end services availed
     })
+   
 }
 function loadHead(){
     var txt = ""
     
         txt = "<tr><th>Client</th><th>Card</th><th>Service</th><th>Date</th><th>Status</th></tr>";
         $("thead").html(txt);
-}
-
-
-function loadSelectClient(){
-    db.collection("users").get().then(function(querySnapshot){
-        querySnapshot.forEach(function(doc){
-            var clientList = doc.data();
-            var text = $("#selectClient").html();
-            text = text+"<option value='"+clientList.uid+"'>"+clientList.fullName+"</option>\n";
-            $("#selectClient").html(text);
-        })
-    })
-    $('select').formSelect();
 }
 function formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
